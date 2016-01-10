@@ -21,7 +21,7 @@ use std::fs::File;
 use std::process::exit;
 
 fn is_date(v: &str) -> bool {
-    let re = Regex::new("T").unwrap();
+    let re = Regex::new(r"\d{4}-\d{2}-\d{2}.*").unwrap();
     let mut date = false;
     if re.is_match(&v) {
         date = true;
@@ -85,7 +85,7 @@ comments: bool, verbose: bool) {
                             fields.push(format!("{}", k));
                             ctable.push(format!("`{}` VARCHAR(24),", k));
                         }
-                        else if t == "$date" && !field.contains(&k) {
+                        else if t == "$date" && !fields.contains(&k) {
                             if !fields.contains(&k) {
                                 fields.push(format!("{}", k));
                                 ctable.push(format!("`{}` TIMESTAMP,", k));
