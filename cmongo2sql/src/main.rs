@@ -85,7 +85,7 @@ comments: bool, verbose: bool) {
                             fields.push(format!("{}", k));
                             ctable.push(format!("`{}` VARCHAR(24),", k));
                         }
-                        else if t == "$date" {
+                        else if t == "$date" && !field.contains(&k) {
                             if !fields.contains(&k) {
                                 fields.push(format!("{}", k));
                                 ctable.push(format!("`{}` TIMESTAMP,", k));
