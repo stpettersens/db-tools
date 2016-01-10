@@ -203,10 +203,10 @@ fn display_error(program: &str, err: &str) {
 }
 
 fn display_usage(program: &str, code: i32) {
-	println!("\ncmongo2sql");
-	println!("Utility to convert a MongoDB JSON dump to a SQL dump.");
-	println!("\nCopyright 2016 Sam Saint-Pettersen.");
-	println!("Licensed under the MIT/X11 License.");
+    println!("\ncmongo2sql");
+    println!("Utility to convert a MongoDB JSON dump to a SQL dump.");
+    println!("\nCopyright 2016 Sam Saint-Pettersen.");
+    println!("Licensed under the MIT/X11 License.");
     println!("\nUsage: {} -f|--file <input.json> -o|--out <output.sql>", program);
     println!("-d|--db <database> -n|--no-comments -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
     println!("\n-f|--file: MongoDB JSON file to convert.");
@@ -240,7 +240,7 @@ fn main() {
 
     let signature = "cmongo2sql 1.0.0 (https://github.com/stpettersens/db-tools)";
 
-	let cli = CliOptions::new("csql2mongo");
+    let cli = CliOptions::new("csql2mongo");
     let program = cli.get_program();
     let args = cli.get_args();
     let mut input = String::new();
