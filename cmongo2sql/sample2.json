@@ -1,0 +1,4 @@
+{"_id":{"$oid":"552dbf77588030e5525790bd"},"createdAt":"2006-01-05","name":"Sample1","value":0.5,"stored":false}
+{"_id":{"$oid":"552dbf89588030e5525790be"},"createdAt":"2006-01-01T10:30:20.010+0000","name":"Sample2","value":1,"stored":true}
+{"_id":{"$oid":"552dbf92588030e5525790bf"},"createdAt":"2006-01-01T10:30:20.010+0000","name":"Sample3","value":0.25,"stored":true}
+{"_id":{"$oid":"552dbf99588030e5525790c0"},"createdAt":"2006-01-01T10:30:20.010+0000","name":"Sample4","value":1.75,"stored":false}

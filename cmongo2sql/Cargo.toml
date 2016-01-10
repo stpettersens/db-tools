@@ -7,3 +7,4 @@ authors = ["Sam Saint-Pettersen <s.stpettersen+github@gmail.com>"]
 clioptions = { git = "https://github.com/stpettersens/clioptions.git" }
 regex = "0.1"
 rustc-serialize = "*"
+chrono = "0.2"

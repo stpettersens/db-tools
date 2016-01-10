@@ -166,8 +166,8 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
     json.push(String::new());
 
     if verbose {
-        println!("Generating MongoDB JSON dump file: '{}' from\nSQL dump file: '{}'",
-        output, input);
+        println!("Generating MongoDB JSON dump file: '{}' from", output);
+        println!("SQL dump file: '{}'.\n", input);
     }
 
     let mut w = File::create(output).unwrap();
