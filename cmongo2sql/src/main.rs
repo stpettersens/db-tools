@@ -2,7 +2,7 @@
 cmongo2sql
 Utility to convert a MongoDB JSON dump to a SQL dump.
 
-Copyright 2015 Sam Saint-Pettersen.
+Copyright 2016 Sam Saint-Pettersen.
 Licensed under the MIT/X11 License.
 
 Rust port of original Python tool (1.0.5).
