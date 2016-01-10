@@ -1,0 +1,4 @@
+{"_id":{"$oid":"552dbf77588030e5525790bd"},"name":"Sample1","value":0.5,"stored":false}
+{"_id":{"$oid":"552dbf89588030e5525790be"},"name":"Sample2","value":1,"stored":true}
+{"_id":{"$oid":"552dbf92588030e5525790bf"},"name":"Sample3","value":0.25,"stored":true}
+{"_id":{"$oid":"552dbf99588030e5525790c0"},"name":"Sample4","value":1.75,"stored":false}
