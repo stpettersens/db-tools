@@ -1,2 +1,11 @@
+#
+# Travis CI configuration for db-tools.
+#
+
 sudo: false
 language: rust
+
+script: 
+	- rake
+after_script: 
+	- rake test
