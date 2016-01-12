@@ -4,8 +4,5 @@
 
 sudo: false
 language: rust
-
-script: 
-	- rake
-after_script: 
-	- rake test
+script: rake
+after_script: rake test
