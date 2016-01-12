@@ -6,16 +6,16 @@ tools = ["ccsv2mongo", "cmongo2sql", "csql2mongo"]
 
 task :default do
 	for t in tools
-		puts ""
+		puts
 		Dir.chdir(t) do
 			puts "Building #{t}..."
 			sh "cargo build --release"
 			sh "target/release/#{t} --help"
 		end
 	end
-	puts ""
+	puts
 end
 
 task :test do
-	puts "TODO"
+	puts "!TODO"
 end
