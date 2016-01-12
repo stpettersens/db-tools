@@ -57,7 +57,6 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
         lines.push(line.unwrap());
     }
 
-    // Preprocess SQL dump so that it is compatible for conversion
     let processed = preprocess_sql(lines);
     
     let mut fields: Vec<String> = Vec::new();
@@ -104,7 +103,7 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
                 values.push(cap.at(1).unwrap().to_string().to_lowercase());
             }
         }
-        re = Regex::new(r"'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})'").unwrap();
+        re = Regex::new(r"'(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})'").unwrap();
         if !headers {
             for cap in re.captures_iter(&line) {
                 let mut v = cap.at(1).unwrap().to_string();
@@ -174,16 +173,33 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
     let _ = w.write_all(json.join("\n").as_bytes());
 }
 
+fn check_extensions(program: &str, input: &str, output: &str) {
+    let mut re = Regex::new(r".sql$").unwrap();
+    if !re.is_match(&input) {
+        display_error(&program, &format!("Input file '{}' is not SQL", &input));
+    }
+    re = Regex::new(r".json$").unwrap();
+    if !re.is_match(&output) {
+        display_error(&program, &format!("Output file '{}' is not JSON", &output));
+    }
+}
+
 fn display_error(program: &str, err: &str) {
     println!("Error: {}.", err);
     display_usage(&program, -1);
 }
 
+fn display_version() {
+    let signature = "csql2mongo 1.0.0 (https://github.com/stpettersens/db-tools)";
+    println!("{}", signature);
+    exit(0);
+}
+
 fn display_usage(program: &str, code: i32) {
-	println!("\ncsql2mongo");
-	println!("Utility to convert a SQL dump to a MongoDB JSON dump.");
-	println!("\nCopyright 2016 Sam Saint-Pettersen.");
-	println!("Licensed under the MIT/X11 License.");
+    println!("\ncsql2mongo");
+    println!("Utility to convert a SQL dump to a MongoDB JSON dump.");
+    println!("\nCopyright 2016 Sam Saint-Pettersen.");
+    println!("Licensed under the MIT/X11 License.");
     println!("\nUsage: {} -f|--file <input.sql> -o|--out <output.json>", program);
     println!("-t|--tz -n|--no-mongo-types -a|--array -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
     println!("\n-f|--file: SQL file to convert.");
@@ -196,23 +212,6 @@ fn display_usage(program: &str, code: i32) {
     println!("-v|--version: Display program version and exit.");
     println!("-h|--help: Display this help information and exit.");
     exit(code);
-}
-
-fn display_version() {
-    let signature = "csql2mongo 1.0.0 (https://github.com/stpettersens/db-tools)";
-    println!("{}", signature);
-    exit(0);
-}
-
-fn check_extensions(program: &str, input: &str, output: &str) {
-    let mut re = Regex::new(r".sql$").unwrap();
-    if !re.is_match(&input) {
-        display_error(&program, &format!("Input file '{}' is not SQL", &input));
-    }
-    re = Regex::new(r".json$").unwrap();
-    if !re.is_match(&output) {
-        display_error(&program, &format!("Output file '{}' is not JSON", &output));
-    }
 }
 
 fn main() {
@@ -229,33 +228,17 @@ fn main() {
 
     if cli.get_num() > 1 {
         for (i, a) in args.iter().enumerate() {
-            if a == "-h" || a == "--help" {
-                display_usage(&program, 0);
-            }
-            else if a == "-v" || a == "--version" {
-                display_version();
-            }
-
-            if a == "-f" || a == "--file" {
-                input = cli.next_argument(i);   
-            }
-            if a == "-o" || a == "--out" {
-                output = cli.next_argument(i);
-            }
-            if a == "-t" || a == "--tz" {
-                tz = true;
-            }
-            if a == "-n" || a == "--no-mongo-types" {
-                mongo_types = false;
-            }
-            if a == "-a" || a == "--array" {
-                array = true;
-            }
-            if a == "-i" || a == "--ignore-ext" {
-                extensions = false;
-            }
-            if a == "-l" || a == "--verbose" {
-                verbose = true;
+            match a.trim() {
+                "-h" | "--help" => display_usage(&program, 0),
+                "-v" | "--version" => display_version(),
+                "-f" | "--file" => input = cli.next_argument(i),
+                "-o" | "--out" => output = cli.next_argument(i),
+                "-t" | "--tz" => tz = true,
+                "-n" | "--no-mongo-types" => mongo_types = false,
+                "-a" | "--array" => array = true,
+                "-i" | "--ignore-ext" => extensions = false,
+                "-l" | "--verbose" => verbose = true,
+                _ => continue,
             }
         }
 
@@ -263,18 +246,14 @@ fn main() {
             check_extensions(&program, &input, &output);
         }
 
-        if input.len() > 0 && output.len() > 0 {
-            convert_sql_to_json(&input, &output, tz, mongo_types, array, verbose);
-        }
-        else if input.len() == 0 {
+        if input.len() == 0 {
             display_error(&program, "No input file specified");
         }
         else if output.len() == 0 {
             display_error(&program, "No output file specified");
         }
-        else {
-            display_error(&program, "Incomplete options provided");
-        }
+
+        convert_sql_to_json(&input, &output, tz, mongo_types, array, verbose);
 
     }
     else {

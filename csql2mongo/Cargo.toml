@@ -1,5 +1,5 @@
 [package]
-name =  "csql2mongo"
+name = "csql2mongo"
 version = "1.0.0"
 authors = ["Sam Saint-Pettersen <s.stpettersen+github@gmail.com>"]
 

@@ -1,10 +1,9 @@
 [package]
-name = "cmongo2sql"
-version = "1.0.0"
+name = "ccsv2mongo"
+version = "0.1.0"
 authors = ["Sam Saint-Pettersen <s.stpettersen+github@gmail.com>"]
 
 [dependencies]
 clioptions = { git = "https://github.com/stpettersens/clioptions.git" }
 regex = "0.1"
-rustc-serialize = "*"
-chrono = "0.2"
+csv = "0.14"

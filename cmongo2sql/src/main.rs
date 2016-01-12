@@ -40,18 +40,12 @@ fn parse_date(v: &str) -> String {
     p
 }
 
-fn convert_json_to_sql(program: &str, signature: &str, input: &str, output: &str, db: &str, 
-comments: bool, verbose: bool) {
-    let mut lines: Vec<String> = Vec::new();
+fn convert_json_to_sql(signature: &str, input: &str, output: &str, db: &str, comments: bool, verbose: bool) {
+    let mut records = Vec::new();
     let f = File::open(input).unwrap();
     let file = BufReader::new(&f);
     for line in file.lines() {
-        lines.push(line.unwrap());
-    }
-
-    let mut records = Vec::new();
-    for line in lines {
-        records.push(Json::from_str(&line).unwrap());
+        records.push(Json::from_str(&line.unwrap()).unwrap());
     }
 
     let mut table = String::new();
@@ -85,7 +79,7 @@ comments: bool, verbose: bool) {
                             fields.push(format!("{}", k));
                             ctable.push(format!("`{}` VARCHAR(24),", k));
                         }
-                        else if t == "$date" && !fields.contains(&k) {
+                        else if t == "$date" {
                             if !fields.contains(&k) {
                                 fields.push(format!("{}", k));
                                 ctable.push(format!("`{}` TIMESTAMP,", k));
@@ -123,13 +117,10 @@ comments: bool, verbose: bool) {
                         ctable.push(format!("`{}` NUMERIC(15, 2),", k));
                     }
                     let v = format!("{}", v);
-                    let n = v.parse::<f64>().ok();
+                    let n = v.parse::<f32>().ok();
                     let v = match n {
                         Some(v) => v,
-                        None => {
-                            display_error(&program, "Problem converting to numeric value");
-                            return;
-                        }
+                        None => 0 as f32
                     };
                     inserts.push(format!("{:.*},", 2, v));
                 }
@@ -197,9 +188,25 @@ comments: bool, verbose: bool) {
     let _ = w.write_all(sql.join("\n").as_bytes());
 }
 
+fn check_extensions(program: &str, input: &str, output: &str) {
+    let mut re = Regex::new(r".json$").unwrap();
+    if !re.is_match(&input) {
+        display_error(&program, &format!("Input file '{}' is not JSON", &input));
+    }
+    re = Regex::new(r".sql$").unwrap();
+    if !re.is_match(&output) {
+        display_error(&program, &format!("Output file '{}' is not SQL", &output));
+    }
+}
+
 fn display_error(program: &str, err: &str) {
     println!("Error: {}.", err);
     display_usage(&program, -1);
+}
+
+fn display_version(signature: &str) {
+    println!("{}", signature);
+    exit(0);
 }
 
 fn display_usage(program: &str, code: i32) {
@@ -220,29 +227,11 @@ fn display_usage(program: &str, code: i32) {
     exit(code);
 }
 
-fn display_version(signature: &str) {
-    println!("{}", signature);
-    exit(0);
-}
-
-fn check_extensions(program: &str, input: &str, output: &str) {
-    let mut re = Regex::new(r".json$").unwrap();
-    if !re.is_match(&input) {
-        display_error(&program, &format!("Input file '{}' is not JSON", &input));
-    }
-    re = Regex::new(r".sql$").unwrap();
-    if !re.is_match(&output) {
-        display_error(&program, &format!("Output file '{}' is not SQL", &output));
-    }
-}
-
 fn main() {
-
     let signature = "cmongo2sql 1.0.0 (https://github.com/stpettersens/db-tools)";
-
-    let cli = CliOptions::new("csql2mongo");
+    let cli = CliOptions::new("cmongo2sql");
     let program = cli.get_program();
-    let args = cli.get_args();
+
     let mut input = String::new();
     let mut output = String::new();
     let mut db = String::new();
@@ -251,50 +240,32 @@ fn main() {
     let mut verbose = false;
 
     if cli.get_num() > 1 {
-        for (i, a) in args.iter().enumerate() {
-            if a == "-h" || a == "--help" {
-                display_usage(&program, 0);
-            }
-            else if a == "-v" || a == "--version" {
-                display_version(&signature);
-            } 
-
-            if a == "-f" || a == "--file" {
-                input = cli.next_argument(i);
-            }
-            if a == "-o" || a == "--out" {
-                output = cli.next_argument(i);
-            }
-            if a == "-d" || a == "--db" {
-                db = cli.next_argument(i);
-            }
-            if a == "-n" || a == "--no-comments" {
-                comments = false;
-            }
-            if a == "-i" || a == "--ignore-ext" {
-                extensions = false;
-            }
-            if a == "-l" || a == "--verbose" {
-                verbose = true;
+        for (i, a) in cli.get_args().iter().enumerate() {
+            match a.trim() {
+                "-h" | "--help" => display_usage(&program, 0),
+                "-v" | "--version" => display_version(&signature),
+                "-f" | "--file" => input = cli.next_argument(i),
+                "-o" | "--out" => output = cli.next_argument(i),
+                "-d" | "--db" => db = cli.next_argument(i),
+                "-n" | "--no-comments" => comments = false,
+                "-i" | "--ignore-ext" => extensions = false,
+                "-l" | "--verbose" => verbose = true,
+                _ => continue,
             }
         }
 
         if extensions {
             check_extensions(&program, &input, &output);
         }
-
-        if input.len() > 0 && output.len() > 0 {
-            convert_json_to_sql(&program, &signature, &input, &output, &db, comments, verbose);
-        }
-        else if input.len() == 0 {
+  
+        if input.len() == 0 {
             display_error(&program, "No input file specified");
         }
         else if output.len() == 0 {
             display_error(&program, "No output file specified");
         }
-        else {
-            display_error(&program, "Incomplete options provided");
-        }
+
+        convert_json_to_sql(&signature, &input, &output, &db, comments, verbose);
     }
     else {
         display_error(&program, "No options specified"); 
