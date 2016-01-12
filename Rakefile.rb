@@ -20,16 +20,14 @@ task :default do
 end
 
 task :test do
-    i = 0
-	for t in tools do
-		Dir.chdir(t) do 
-			sh "#{bin}#{t} --help"
+	for i in 0..tools.length - 1
+		Dir.chdir(tools[i]) do 
+			sh "#{bin}#{tools[i]} --help"
 			puts 
-			sh "#{bin}#{t} -f sample.#{ins[i]} -o out.#{outs[i]}"
+			sh "#{bin}#{tools[i]} -f sample.#{ins[i]} -o out.#{outs[i]}"
 			puts
 			sh "cat out.#{outs[i]}"
 			puts
 		end
-        i += 1
 	end
 end
