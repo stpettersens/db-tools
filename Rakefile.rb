@@ -25,10 +25,10 @@ task :test do
 		Dir.chdir(t) do 
 			sh "#{bin}#{t} --help"
 			puts 
-            sh "#{bin}#{t} -f sample.#{ins[i]} -o out.#{outs[i]}"
-            puts
-            sh "cat out.#{outs[i]}"
-            puts
+			sh "#{bin}#{t} -f sample.#{ins[i]} -o out.#{outs[i]}"
+			puts
+			sh "cat out.#{outs[i]}"
+			puts
 		end
         i += 1
 	end
