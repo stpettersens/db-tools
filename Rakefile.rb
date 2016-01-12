@@ -2,7 +2,12 @@
 # Rakefile to build each tool via `cargo` and invoke it.
 #
 
+bin = "target/release/"
+
 tools = ["ccsv2mongo", "cmongo2sql", "csql2mongo"]
+
+ins = [ "csv", "json", "sql" ]
+outs = [ "json", "sql", "json" ]
 
 task :default do
 	for t in tools
@@ -15,10 +20,16 @@ task :default do
 end
 
 task :test do
-	for t in tools
+    i = 0
+	for t in tools do
 		Dir.chdir(t) do 
-			sh "target/release/#{t} --help"
+			sh "#{bin}#{t} --help"
 			puts 
+            sh "#{bin}#{t} -f sample.#{ins[i]} -o out.#{outs[i]}"
+            puts
+            sh "cat out.#{outs[i]}"
+            puts
 		end
+        i += 1
 	end
 end
