@@ -1,0 +1,2 @@
+{"_id":{"$oid":"287be3c78d0645d1911dcf29"},"element":"Oxygen","type":"gas","symbol":"O","samples":5.95,"createdAt":{"$date":"2015-01-01T14:00:00.000Z"},"stored":false}
+{"_id":{"$oid":"55bfe60ef1924e22a4ec84a4"},"element":"Hydrogen","type":"gas","symbol":"H","samples":15.00,"createdAt":{"$date":"2015-01-01T15:10:12.000Z"},"stored":true}

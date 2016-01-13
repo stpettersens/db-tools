@@ -162,11 +162,11 @@ fn display_usage(program: &str, code: i32) {
     println!("Utility to convert a CSV file to a MongoDB JSON dump.");
     println!("\nCopyright 2016 Sam Saint-Pettersen.");
     println!("Licensed under the MIT/X11 License.");
-    println!("\nUsage: {} -f|--file <input.csv> -o|--out <output.sql>", program);
-    println!("-d|--db <database> -n|--no-comments -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
-    println!("\n-f|--file: MongoDB JSON file to convert.");
-    println!("-o|--out: SQL file as output.");
-    println!("-s|--separator: Set field seperator (default: ,)");
+    println!("\nUsage: {} -f|--file <input.csv> -o|--out <output.sql> -s|--separator <separator>", program);
+    println!("-n|--no-mongo-types -a|--array -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
+    println!("\n-f|--file: CSV file to convert.");
+    println!("-o|--out: MongoDB JSON file as output.");
+    println!("-s|--separator: Set field seperator (default: ,).");
     println!("-n|--no-mongo-types: Do not use MongoDB types in output.");
     println!("-a|--array: Output MongoDB records as a JSON array.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
