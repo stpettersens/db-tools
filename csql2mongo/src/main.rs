@@ -246,10 +246,10 @@ fn main() {
             check_extensions(&program, &input, &output);
         }
 
-        if input.len() == 0 {
+        if input.is_empty() {
             display_error(&program, "No input file specified");
         }
-        else if output.len() == 0 {
+        else if output.is_empty() {
             display_error(&program, "No output file specified");
         }
 

@@ -218,7 +218,7 @@ fn display_usage(program: &str, code: i32) {
     println!("-d|--db <database> -n|--no-comments -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
     println!("\n-f|--file: MongoDB JSON file to convert.");
     println!("-o|--out: SQL file as output.");
-    println!("-d|--db: Databse name to use for output.");
+    println!("-d|--db: Database name to use for output.");
     println!("-n|--no-comments: Do not write comments in output.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
     println!("-l|--verbose: Display console output on conversion.");
@@ -258,10 +258,10 @@ fn main() {
             check_extensions(&program, &input, &output);
         }
   
-        if input.len() == 0 {
+        if input.is_empty() {
             display_error(&program, "No input file specified");
         }
-        else if output.len() == 0 {
+        else if output.is_empty() {
             display_error(&program, "No output file specified");
         }
 

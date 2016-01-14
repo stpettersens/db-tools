@@ -1,6 +1,6 @@
 [root]
 name = "ccsv2mongo"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "clioptions 0.1.0 (git+https://github.com/stpettersens/clioptions.git)",
  "csv 0.14.3 (registry+https://github.com/rust-lang/crates.io-index)",

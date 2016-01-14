@@ -17,8 +17,32 @@ use std::io::{BufRead, BufReader, Write};
 use std::fs::File;
 use std::process::exit;
 
+fn is_date(v: &str) -> bool {
+    let re = Regex::new(r"\d{4}-\d{2}-\d{2}.*").unwrap();
+    let mut date = false;
+    if re.is_match(&v) {
+        date = true;
+    }
+    date
+}
+
+fn parse_timestamp(v: &str, tz: bool) -> String {
+    let re = Regex::new(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}).*").unwrap();
+    let mut p = String::new();
+    for cap in re.captures_iter(&v) {
+        p = cap.at(1).unwrap().to_string();
+    }
+    if tz {
+        p = format!("{}Z", p);
+    }
+    else {
+        p = format!("{}+0000", p);
+    }
+    p
+}
+
 fn convert_csv_to_json(input: &str, output: &str, separator: &str, 
-mongo_types: bool, array: bool, verbose: bool) {
+tz: bool, mongo_types: bool, array: bool, verbose: bool) {
     let f = File::open(input).unwrap();
     let file = BufReader::new(&f);
     let mut headers = String::new();
@@ -66,7 +90,7 @@ mongo_types: bool, array: bool, verbose: bool) {
                 for cap in re.captures_iter(&f) {
                     let mut field = cap.at(1).unwrap().to_string();
                     if mongo_types {
-                        field = format!("{{\"$date\":\"{}\"}}", &field[0..field.len()]);
+                        field = format!("{{\"$date\":\"{}\"}}", parse_timestamp(&field[0..field.len()], tz));
                     }
                     else {
                         field = format!("\"{}\"", field);
@@ -95,6 +119,9 @@ mongo_types: bool, array: bool, verbose: bool) {
             // Strings
             re = Regex::new(r"\w+").unwrap();
             if re.is_match(&f) {
+                if is_date(&f) {
+                    record.push(format!("\"{}\"", parse_timestamp(&f, tz)));
+                }
                 record.push(format!("\"{}\"", f));
                 continue;
             }
@@ -167,6 +194,7 @@ fn display_usage(program: &str, code: i32) {
     println!("\n-f|--file: CSV file to convert.");
     println!("-o|--out: MongoDB JSON file as output.");
     println!("-s|--separator: Set field seperator (default: ,).");
+    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000");
     println!("-n|--no-mongo-types: Do not use MongoDB types in output.");
     println!("-a|--array: Output MongoDB records as a JSON array.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
@@ -184,6 +212,7 @@ fn main() {
     let mut input = String::new();
     let mut output = String::new();
     let mut separator = ",".to_string();
+    let mut tz = false;
     let mut mongo_types = true;
     let mut array = false;
     let mut extensions = true;
@@ -197,6 +226,7 @@ fn main() {
                 "-f" | "--file" => input = cli.next_argument(i),
                 "-o" | "--out" => output = cli.next_argument(i),
                 "-s" | "--separator" => separator = cli.next_argument(i),
+                "-t" | "--tz" => tz = true,
                 "-n" | "--no-mongo-types" => mongo_types = false,
                 "-a" | "--array" => array = true,
                 "-i" | "--ignore-ext" => extensions = false,
@@ -209,14 +239,14 @@ fn main() {
             check_extensions(&program, &input, &output);
         }
   
-        if input.len() == 0 {
+        if input.is_empty() {
             display_error(&program, "No input file specified");
         }
-        else if output.len() == 0 {
+        else if output.is_empty() {
             display_error(&program, "No output file specified");
         }
 
-        convert_csv_to_json(&input, &output, &separator, mongo_types, array, verbose);
+        convert_csv_to_json(&input, &output, &separator, tz, mongo_types, array, verbose);
     }
     else {
         display_error(&program, "No options specified"); 
