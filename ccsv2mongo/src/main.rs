@@ -66,7 +66,7 @@ mongo_types: bool, array: bool, verbose: bool) {
                 for cap in re.captures_iter(&f) {
                     let mut field = cap.at(1).unwrap().to_string();
                     if mongo_types {
-                        field = format!("{{\"$date\":\"{}\"}}", &field[0..field.len() - 1]);
+                        field = format!("{{\"$date\":\"{}\"}}", &field[0..field.len()]);
                     }
                     else {
                         field = format!("\"{}\"", field);
