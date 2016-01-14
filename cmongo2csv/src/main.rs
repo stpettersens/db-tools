@@ -216,7 +216,7 @@ fn main() {
         if input.is_empty() {
             display_error(&program, "No input file specified");
         }
-        else output.is_empty() {
+        else if output.is_empty() {
             display_error(&program, "No output file specified");
         }
 
