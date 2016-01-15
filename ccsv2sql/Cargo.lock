@@ -1,5 +1,5 @@
 [root]
-name = "csv2sql"
+name = "ccsv2sql"
 version = "1.0.0"
 dependencies = [
  "chrono 0.2.17 (registry+https://github.com/rust-lang/crates.io-index)",

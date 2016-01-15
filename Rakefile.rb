@@ -4,10 +4,10 @@
 
 bin = "target/release/"
 
-tools = [ "ccsv2mongo", "cmongo2csv", "cmongo2sql", "csql2csv", "csql2mongo" ]
+tools = [ "ccsv2mongo", "ccsv2sql", "cmongo2csv", "cmongo2sql", "csql2csv", "csql2mongo" ]
 
-ins = [ "csv", "json", "json", "sql", "sql" ]
-outs = [ "json", "csv", "sql", "csv", "json" ]
+ins = [ "csv", "csv", "json", "json", "sql", "sql" ]
+outs = [ "json", "sql", "csv", "sql", "csv", "json" ]
 
 task :default do
     for t in tools

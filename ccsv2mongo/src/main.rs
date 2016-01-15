@@ -17,14 +17,14 @@ use std::io::{BufRead, BufReader, Write};
 use std::fs::File;
 use std::process::exit;
 
-fn is_date(v: &str) -> bool {
+/*fn is_date(v: &str) -> bool {
     let re = Regex::new(r"\d{4}-\d{2}-\d{2}.*").unwrap();
     let mut date = false;
     if re.is_match(&v) {
         date = true;
     }
     date
-}
+}*/
 
 fn parse_timestamp(v: &str, tz: bool) -> String {
     let re = Regex::new(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}).*").unwrap();
@@ -119,9 +119,9 @@ tz: bool, mongo_types: bool, array: bool, verbose: bool) {
             // Strings
             re = Regex::new(r"\w+").unwrap();
             if re.is_match(&f) {
-                if is_date(&f) {
+                /*if is_date(&f) {
                     record.push(format!("\"{}\"", parse_timestamp(&f, tz)));
-                }
+                }*/
                 record.push(format!("\"{}\"", f));
                 continue;
             }
