@@ -170,8 +170,8 @@ fn display_version() {
 }
 
 fn display_usage(program: &str, code: i32) {
-    println!("\ncsql2mongo");
-    println!("Utility to convert a SQL dump to a MongoDB JSON dump.");
+    println!("\ncsql2csv");
+    println!("Utility to convert a SQL dump to a CSV file.");
     println!("\nCopyright 2016 Sam Saint-Pettersen.");
     println!("Licensed under the MIT/X11 License.");
     println!("\nUsage: {} -f|--file <input.sql> -o|--out <output.json>", program);
