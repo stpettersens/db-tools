@@ -213,15 +213,15 @@ fn main() {
             }
         }
 
-        if extensions {
-            check_extensions(&program, &input, &output);
-        }
-
         if input.is_empty() {
             display_error(&program, "No input file specified");
         }
         else if output.is_empty() {
             display_error(&program, "No output file specified");
+        }
+
+        if extensions {
+            check_extensions(&program, &input, &output);
         }
 
         convert_sql_to_csv(&input, &output, &separator, tz, verbose);

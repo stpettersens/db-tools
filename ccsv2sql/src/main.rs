@@ -77,7 +77,6 @@ comments: bool, verbose: bool) {
                     fields.push(headers[i].clone());
                     ctable.push(format!("`{}` VARCHAR(24),", headers[i]));
                 }
-
                 for cap in re.captures_iter(&v) {
                     let v = cap.at(1).unwrap().to_string();
                     inserts.push(format!("\"{}\"", &v[1..v.len() - 1]));
@@ -218,6 +217,16 @@ fn display_usage(program: &str, code: i32) {
     println!("\nCopyright 2016 Sam Saint-Pettersen.");
     println!("Licensed under the MIT/X11 License.");
     println!("\nUsage: {} -f|--file <input.csv> -o|--out <output.sql> -s|--separator <separator>", program);
+    println!("-d|--db <database> -n|--no-comments -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
+    println!("\n-f|--file: CSV file to convert.");
+    println!("-o|--out: SQL file as output.");
+    println!("-s|--separator: Set field seperator (default: ,).");
+    println!("-d|--db: Database name to use for output.");
+    println!("-n|--no-comments: Do not write comments in output.");
+    println!("-i|--ignore-ext: Ignore file extensions for input/output.");
+    println!("-l|--verbose: Display console output on conversion.");
+    println!("-v|--version: Display program version and exit.");
+    println!("-h|--help: Display this help information and exit.");
     exit(code);
 }
 
@@ -251,16 +260,16 @@ fn main() {
                 _ => continue,
             }
         }
-
-        if extensions {
-            check_extensions(&program, &input, &output);
-        }
   
         if input.is_empty() {
             display_error(&program, "No input file specified");
         }
         else if output.is_empty() {
             display_error(&program, "No output file specified");
+        }
+
+        if extensions {
+            check_extensions(&program, &input, &output);
         }
 
         convert_csv_to_json(&signature, &input, &output, &separator, &db, comments, verbose);

@@ -253,16 +253,16 @@ fn main() {
                 _ => continue,
             }
         }
-
-        if extensions {
-            check_extensions(&program, &input, &output);
-        }
   
         if input.is_empty() {
             display_error(&program, "No input file specified");
         }
         else if output.is_empty() {
             display_error(&program, "No output file specified");
+        }
+
+        if extensions {
+            check_extensions(&program, &input, &output);
         }
 
         convert_json_to_sql(&signature, &input, &output, &db, comments, verbose);

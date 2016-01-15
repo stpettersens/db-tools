@@ -242,10 +242,6 @@ fn main() {
             }
         }
 
-        if extensions {
-            check_extensions(&program, &input, &output);
-        }
-
         if input.is_empty() {
             display_error(&program, "No input file specified");
         }
@@ -253,8 +249,11 @@ fn main() {
             display_error(&program, "No output file specified");
         }
 
-        convert_sql_to_json(&input, &output, tz, mongo_types, array, verbose);
+        if extensions {
+            check_extensions(&program, &input, &output);
+        }
 
+        convert_sql_to_json(&input, &output, tz, mongo_types, array, verbose);
     }
     else {
         display_error(&program, "No options specified"); 
