@@ -172,7 +172,7 @@ fn display_usage(program: &str, code: i32) {
     println!("\n-f|--file: MongoDB JSON file to convert.");
     println!("-o|--out: CSV file as output.");
     println!("-s|--separator: Separator to use in output (default: ,).");
-    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000");
+    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000.");
     println!("-n|--no-mongo-types: Do not use MongoDB types in output.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
     println!("-l|--verbose: Display console output on conversion.");

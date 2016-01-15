@@ -182,7 +182,7 @@ fn display_usage(program: &str, code: i32) {
     println!("\n-f|--file: CSV file to convert.");
     println!("-o|--out: MongoDB JSON file as output.");
     println!("-s|--separator: Set field seperator (default: ,).");
-    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000");
+    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000.");
     println!("-n|--no-mongo-types: Do not use MongoDB types in output.");
     println!("-a|--array: Output MongoDB records as a JSON array.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");

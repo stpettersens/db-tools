@@ -179,7 +179,7 @@ fn display_usage(program: &str, code: i32) {
     println!("\n-f|--file: SQL file to convert.");
     println!("-o|--out: MongoDB JSON file as output.");
     println!("-s|--separator: Separator to use for output (default: ,).");
-    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000");
+    println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
     println!("-l|--verbose: Display console output on conversion.");
     println!("-v|--version: Display program version and exit.");
