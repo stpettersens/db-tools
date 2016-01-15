@@ -1,0 +1,10 @@
+[package]
+name = "csv2sql"
+version = "1.0.0"
+authors = ["Sam Saint-Pettersen <s.stpettersen+github@gmail.com>"]
+
+[dependencies]
+clioptions = { git = "https://github.com/stpettersens/clioptions.git" }
+regex = "0.1"
+csv = "0.14"
+chrono = "0.2"

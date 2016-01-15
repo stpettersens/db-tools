@@ -1,11 +1,11 @@
 /*
-csql2mongo
-Utility to convert a SQL dump to a MongoDB JSON dump.
+csql2csv
+Utility to convert a SQL dump to a CSV file.
 
 Copyright 2016 Sam Saint-Pettersen.
 Licensed under the MIT/X11 License.
 
-Rust port of original Python tool (1.0.6).
+Rust port of original Python tool (1.0.0).
 */
 
 extern crate clioptions;
@@ -49,7 +49,7 @@ fn preprocess_sql(lines: Vec<String>) -> Vec<String> {
     processed
 }
 
-fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, array: bool, verbose: bool) {
+fn convert_sql_to_csv(input: &str, output: &str, separator: &str, tz: bool, verbose: bool) {
     let mut lines: Vec<String> = Vec::new();
     let f = File::open(input).unwrap();
     let file = BufReader::new(&f);
@@ -94,7 +94,7 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
         re = Regex::new(r"'([\w\s]+)'").unwrap();
         if !headers {
             for cap in re.captures_iter(&line) {
-                values.push(format!("\"{}\"", cap.at(1).unwrap().to_string()));
+                values.push(format!("{}", cap.at(1).unwrap().to_string()));
             }
         }
         re = Regex::new("(TRUE|FALSE|NULL)").unwrap();
@@ -116,12 +116,7 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
                 else {
                     v = format!("{}+0000", v);
                 }
-                if mongo_types {
-                    values.push(format!("{{\"$date\":\"{}\"}}", v));
-                }
-                else {
-                    values.push(format!("\"{}\"", v));
-                }
+                values.push(v);
             }
         }
     } 
@@ -129,48 +124,27 @@ fn convert_sql_to_json(input: &str, output: &str, tz: bool, mongo_types: bool, a
     let v = &values;
     for record in v.chunks(fields.len()) {
         let mut formatted: Vec<String> = Vec::new();
-        for (i, element) in record.into_iter().enumerate() {
-            if fields[i] == "_id" && mongo_types {
-                formatted.push(format!("{{\"$oid\":{}}}", element).to_string());
-            }
-            else {
-                formatted.push(element.to_string());
-            }
+        for element in record {
+        	formatted.push(element.to_string());
         }
         inserts.push(formatted);
     }
 
-    let mut json: Vec<String> = Vec::new();
-    let no_comma = inserts.len() - 1;
-    for (x, r) in inserts.iter().enumerate() {
-        let mut fr: Vec<String> = Vec::new();
-        for (i, v) in r.iter().enumerate() {
-            fr.push(format!("\"{}\":{}", fields[i], v));
-        }
-        let mut ac = String::new();
-        if x == no_comma && array {
-            ac = "".to_string();
-        }
-        else if array {
-            ac = ",".to_string();    
-        }     
-        json.push(format!("{{{}}}{}", fr.join(","), ac));
+    let mut csv: Vec<String> = Vec::new();
+    csv.push(fields.join(separator));
+    for record in inserts {
+    	csv.push(record.join(separator));
     }
     
-    if array {
-        json.insert(0, "[".to_string());
-        json.push("]".to_string());
-    }
-
-    json.push(String::new());
+    csv.push(String::new());
 
     if verbose {
-        println!("Generating MongoDB JSON dump file: '{}' from", output);
+        println!("Generating CSV file: '{}' from", output);
         println!("SQL dump file: '{}'.\n", input);
     }
 
     let mut w = File::create(output).unwrap();
-    let _ = w.write_all(json.join("\n").as_bytes());
+    let _ = w.write_all(csv.join("\n").as_bytes());
 }
 
 fn check_extensions(program: &str, input: &str, output: &str) {
@@ -178,9 +152,9 @@ fn check_extensions(program: &str, input: &str, output: &str) {
     if !re.is_match(&input) {
         display_error(&program, &format!("Input file '{}' is not SQL", &input));
     }
-    re = Regex::new(r".json$").unwrap();
+    re = Regex::new(r".csv$").unwrap();
     if !re.is_match(&output) {
-        display_error(&program, &format!("Output file '{}' is not JSON", &output));
+        display_error(&program, &format!("Output file '{}' is not CSV", &output));
     }
 }
 
@@ -190,7 +164,7 @@ fn display_error(program: &str, err: &str) {
 }
 
 fn display_version() {
-    let signature = "csql2mongo 1.0.0 (https://github.com/stpettersens/db-tools)";
+    let signature = "csql2csv 1.0.0 (https://github.com/stpettersens/db-tools)";
     println!("{}", signature);
     exit(0);
 }
@@ -204,9 +178,8 @@ fn display_usage(program: &str, code: i32) {
     println!("-t|--tz -n|--no-mongo-types -a|--array -i|--ignore-ext -l|--verbose [-v|--version][-h|--help]");
     println!("\n-f|--file: SQL file to convert.");
     println!("-o|--out: MongoDB JSON file as output.");
+    println!("-s|--separator: Separator to use for output (default: ,).");
     println!("-t|--tz: Use \"Z\" as timezone for timestamps rather than +0000");
-    println!("-n|--no-mongo-types: Do not use MongoDB types in output.");
-    println!("-a|--array: Output MongoDB records as a JSON array.");
     println!("-i|--ignore-ext: Ignore file extensions for input/output.");
     println!("-l|--verbose: Display console output on conversion.");
     println!("-v|--version: Display program version and exit.");
@@ -217,12 +190,11 @@ fn display_usage(program: &str, code: i32) {
 fn main() {
 	let cli = CliOptions::new("csql2mongo");
     let program = cli.get_program();
-
+    
     let mut input = String::new();
     let mut output = String::new();
+    let mut separator = ",".to_string();
     let mut tz = false;
-    let mut mongo_types = true;
-    let mut array = false;
     let mut extensions = true;
     let mut verbose = false;
 
@@ -233,9 +205,8 @@ fn main() {
                 "-v" | "--version" => display_version(),
                 "-f" | "--file" => input = cli.next_argument(i),
                 "-o" | "--out" => output = cli.next_argument(i),
+                "-s" | "--separator" => separator = cli.next_argument(i),
                 "-t" | "--tz" => tz = true,
-                "-n" | "--no-mongo-types" => mongo_types = false,
-                "-a" | "--array" => array = true,
                 "-i" | "--ignore-ext" => extensions = false,
                 "-l" | "--verbose" => verbose = true,
                 _ => continue,
@@ -253,7 +224,7 @@ fn main() {
             display_error(&program, "No output file specified");
         }
 
-        convert_sql_to_json(&input, &output, tz, mongo_types, array, verbose);
+        convert_sql_to_csv(&input, &output, &separator, tz, verbose);
 
     }
     else {
