@@ -21,9 +21,9 @@ end
 
 task :test do
     for i in 0..tools.length - 1
-        Dir.chdir(tools[i]) do 
+        Dir.chdir(tools[i]) do
             sh "#{bin}#{tools[i]} --help"
-            puts 
+            puts
             sh "#{bin}#{tools[i]} -f sample.#{ins[i]} -o out.#{outs[i]}"
             puts
             sh "cat out.#{outs[i]}"
