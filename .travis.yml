@@ -1,8 +1,13 @@
-#
-# Travis CI configuration for db-tools.
-#
+notifications:
+    email: false
 
-sudo: false
+sudo: required
 language: rust
-before_script: rake
-script: rake test
+before_install: 
+    - sudo apt-get install tree
+    - sudo apt-get install rubygems
+    - sudo gem install os
+script: 
+    - rake
+after_script:
+    - rake test

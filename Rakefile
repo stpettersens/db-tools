@@ -2,6 +2,8 @@
 # Rakefile to build each tool via `cargo` and invoke it.
 #
 
+require 'os'
+
 bin = "target/release/"
 
 tools = [ "ccsv2mongo", "ccsv2sql", "cmongo2csv", "cmongo2sql", "csql2csv", "csql2mongo" ]
@@ -26,7 +28,11 @@ task :test do
             puts
             sh "#{bin}#{tools[i]} -f sample.#{ins[i]} -o out.#{outs[i]}"
             puts
-            sh "cat out.#{outs[i]}"
+            if OS.windows? then
+                sh "type out.#{outs[i]}"
+            else
+                sh "cat out.#{outs[i]}"
+            end
             puts
         end
     end
