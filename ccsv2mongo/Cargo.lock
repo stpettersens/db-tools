@@ -67,3 +67,13 @@ name = "rustc-serialize"
 version = "0.3.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
+[metadata]
+"checksum aho-corasick 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8f36f237c490deb976b38aca6369182dceb5a7af249aabf41c0ba5a964bac5ed"
+"checksum byteorder 0.3.13 (registry+https://github.com/rust-lang/crates.io-index)" = "29b2aa490a8f546381308d68fc79e6bd753cd3ad839f7a7172897f1feedfa175"
+"checksum clioptions 0.1.0 (git+https://github.com/stpettersens/clioptions.git)" = "<none>"
+"checksum csv 0.14.3 (registry+https://github.com/rust-lang/crates.io-index)" = "8fcb0d28c18dd9dafa7e5efd49d591f3383d12073568a3f7e0b5bc7c25a1bebc"
+"checksum libc 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)" = "10569e57695cc2c91ca4214357907649c9e242dc822c9ae623d0e0b0d68aa4d9"
+"checksum memchr 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "dc66b0957bf6ae6590681ceac49b0df16823d43037d49aaf2ee658d483af30ab"
+"checksum regex 0.1.46 (registry+https://github.com/rust-lang/crates.io-index)" = "e9184b07397782b0df7b34f1827fb20b83dee079639b6689226b15b05dff4225"
+"checksum regex-syntax 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "fcf1e805b0a23c845be2a303136d840a1511284727bc1f1fc32d079552ef901f"
+"checksum rustc-serialize 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)" = "1a48546a64cae47d06885e9bccadb99d0547d877a94c5167fa451ea33a484456"
