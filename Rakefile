@@ -3,6 +3,7 @@
 #
 
 require 'os'
+require 'fileutils'
 
 bin = "target/release/"
 
@@ -34,6 +35,14 @@ task :test do
                 sh "cat out.#{outs[i]}"
             end
             puts
+        end
+    end
+end
+    
+task :clean do
+    for i in 0..tools.length - 1
+        Dir.chdir(tools[i]) do
+            FileUtils.rm_rf("target")
         end
     end
 end
