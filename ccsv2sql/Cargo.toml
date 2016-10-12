@@ -1,10 +1,13 @@
 [package]
 name = "ccsv2sql"
+description = "Utility to convert a CSV file to a SQL dump."
 version = "1.0.0"
 authors = ["Sam Saint-Pettersen <s.stpettersen+github@gmail.com>"]
+homepage = "https://github.com/stpettersens/db-tools"
+license = "MIT"
 
 [dependencies]
-clioptions = { git = "https://github.com/stpettersens/clioptions.git" }
-regex = "0.1"
-csv = "0.14"
-chrono = "0.2"
+clioptions = "0.1.0"
+regex = "0.1.77"
+csv = "0.14.7"
+chrono = "0.2.25"
