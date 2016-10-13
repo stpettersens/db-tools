@@ -43,6 +43,15 @@ task :clean do
     for i in 0..tools.length - 1
         Dir.chdir(tools[i]) do
             FileUtils.rm_rf("target")
+            File.delete("out.#{outs[i]}")
+        end
+    end
+end
+
+task :cleanlocks do 
+    for i in 0..tools.length - 1
+        Dir.chdir(tools[i]) do
+            File.delete("Cargo.lock")
         end
     end
 end
