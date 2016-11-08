@@ -4,7 +4,6 @@ notifications:
 sudo: required
 language: rust
 before_install: 
-    - sudo apt-get install tree
     - sudo apt-get install rubygems
     - sudo gem install os
     - ruby --version
